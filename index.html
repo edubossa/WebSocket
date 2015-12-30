@@ -1,0 +1,1606 @@
+<!doctype html>
+<!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/github-dark.css">
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="javascripts/script.js"></script>
+
+  <title>docs.gate2all</title>
+  <meta name="description" content="JSR 356: JavaTM API for WebSocket">
+
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+</head>
+
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1 class="title">docs.gate2all</h1>
+    </header>
+    <div id="container">
+      <p class="tagline">JSR 356: JavaTM API for WebSocket</p>
+      <div id="main" role="main">
+        <div class="download-bar">
+        <div class="inner">
+          <a href="https://github.com/edubossa/WebSocket/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/edubossa/WebSocket/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/edubossa/WebSocket" class="code">View docs.gate2all on GitHub</a>
+        </div>
+        <span class="blc"></span><span class="trc"></span>
+        </div>
+        <article class="markdown-body">
+          <hr>
+
+<p>title: API Reference</p>
+
+<p>language_tabs:</p>
+
+<ul>
+<li>xml</li>
+<li>php</li>
+<li>python</li>
+</ul>
+
+<p>toc_footers:</p>
+
+<ul>
+<li><a href="#">Sign Up for a Developer Key</a></li>
+<li><a href="http://github.com/tripit/slate">Documentation Powered by Slate</a></li>
+</ul>
+
+<p>includes:</p>
+
+<ul>
+<li>errors</li>
+</ul>
+
+<h2>
+<a id="search-true" class="anchor" href="#search-true" aria-hidden="true"><span class="octicon octicon-link"></span></a>search: true</h2>
+
+<h1>
+<a id="gateway" class="anchor" href="#gateway" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gateway</h1>
+
+<p>O GATE2all é uma ferramenta desenvolvida pela NTK Solutions que viabiliza transações para lojas
+virtuais (e-commerce).</p>
+
+<p>A vantagem de se utilizar nossa ferramenta é que você não precisará se preocupar em afiliar sua
+empresa com diversas instituições financeiras, através do GATE2all você se beneficia delas de forma
+unificada e sem complicações.</p>
+
+<h1>
+<a id="gate2all-loja" class="anchor" href="#gate2all-loja" aria-hidden="true"><span class="octicon octicon-link"></span></a>GATE2all Loja</h1>
+
+<p>No modelo GATE2All Loja o usuário é redirecionado pela loja virtual ao gateway transacional no
+momento da operação de pagamento.</p>
+
+<p><img src="images/img2.png"></p>
+
+<p>O GATE2all terá o logotipo fornecido pelo lojista, de forma que se mantenha a identidade visual da
+loja virtual.</p>
+
+<p>Ao redirecionar o usuário ao GATE2all, a loja virtual envia uma mensagem contendo a URL à qual o
+usuário deve ser redirecionado quando do término da operação de pagamento.</p>
+
+<p>Neste modelo há necessidade de desenvolvimento de integração entre os sistemas da loja virtual e
+do gateway transacional GATE2all, mas não há necessidade de desenvolvimento de telas ou campos
+para captura dos dados do usuário. Isto será feito diretamente pelo GATE2all. Também não há
+obrigação do uso de SSL por parte da loja virtual, tendo em vista que nenhum dado do usuário irá
+trafegar por ela.</p>
+
+<h2>
+<a id="fluxo-da-transação" class="anchor" href="#fluxo-da-transa%C3%A7%C3%A3o" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fluxo da Transação</h2>
+
+<ol>
+<li>Todo o processo que envolve a realização de um pedido (escolha do produto, carrinho de compras
+e cadastro do cliente) é executado dentro da loja virtual.</li>
+<li>No passo de pagamento, a loja virtual envia para o GATE2all o valor total do pedido, número
+máximo de parcelas, URL para retorno e opcionalmente um número de documento (numeração de
+controle do lojista) através de um arquivo XML.</li>
+<li>O comprador é redirecionado para o ambiente do GATE2all onde será efetuada a captura dos
+dados do cartão.</li>
+<li>GATE2all valida os parâmetros recebidos na requisição.</li>
+<li>Em caso de sucesso ou falha na autenticação e validação da transação, o GATE2all irá redirecionar
+o comprador para a URL de retorno.</li>
+<li>Loja virtual consulta GATE2all para verificar status da transação.</li>
+</ol>
+
+<h2>
+<a id="observações" class="anchor" href="#observa%C3%A7%C3%B5es" aria-hidden="true"><span class="octicon octicon-link"></span></a>Observações</h2>
+
+<ul>
+<li>Não é verificado se a soma dos valores dos itens de pedido é igual ao valor total do pedido.</li>
+<li>O valor dos parâmetros será truncado, caso sejam enviados com tamanho superior ao definido.</li>
+</ul>
+
+<blockquote>
+<p>To authorize, use this code:</p>
+</blockquote>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>kittn<span class="pl-pds">'</span></span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">api</span> <span class="pl-k">=</span> <span class="pl-c1">Kittn</span><span class="pl-k">::</span><span class="pl-c1">APIClient</span><span class="pl-k">.</span><span class="pl-c1">authorize</span><span class="pl-k">!</span>(<span class="pl-s"><span class="pl-pds">'</span>meowmeowmeow<span class="pl-pds">'</span></span>)</span></pre></div>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> kittn
+
+api <span class="pl-k">=</span> kittn.authorize(<span class="pl-s"><span class="pl-pds">'</span>meowmeowmeow<span class="pl-pds">'</span></span>)</pre></div>
+
+<div class="highlight highlight-text-xml"><pre>import kittn
+
+api = kittn.authorize('meowmeowmeow')</pre></div>
+
+<h1>
+<a id="gate2all-integrado" class="anchor" href="#gate2all-integrado" aria-hidden="true"><span class="octicon octicon-link"></span></a>GATE2all Integrado</h1>
+
+<p>Neste modelo todo o relacionamento com o usuário é realizado pela loja virtual, inclusive eventual
+captura de dados de cartões de crédito. Portanto sua loja virtual deverá ser homologada PCI, para
+maiores informações consulte o site <a href="https://www.pcisecuritystandards.org">https://www.pcisecuritystandards.org</a></p>
+
+<p><img src="images/img1.png"></p>
+
+<p>A loja virtual deve fazer a captura de todos os dados necessários e submetê-los ao adquirente via
+gateway transacional GATE2all. A resposta à solicitação será síncrona e instantânea.</p>
+
+<p>Neste modelo um maior desenvolvimento será necessário por parte do desenvolvedor da loja virtual.
+Tendo este que, não só desenvolver as interfaces de captura dos dados da transação, como também,
+a integração com o GATE2all.</p>
+
+<h2>
+<a id="fluxo-da-transação-1" class="anchor" href="#fluxo-da-transa%C3%A7%C3%A3o-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fluxo da Transação</h2>
+
+<ol>
+<li>Todos os dados da venda e do comprador são capturados dentro da loja virtual e enviados para o
+GATE2all através de um XML.</li>
+<li>GATE2all envia a requisição ao adquirente.</li>
+<li>Adquirente retorna a resposta da autorização da transação para o GATE2all, através de um XML
+via POST.</li>
+<li>GATE2all retorna resposta da requisição, também através de um XML via POST.</li>
+</ol>
+
+<h2>
+<a id="aprovacao" class="anchor" href="#aprovacao" aria-hidden="true"><span class="octicon octicon-link"></span></a>Aprovacao</h2>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">//PRODUCAO</span></span>
+<span class="pl-s1"><span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">$urlGate2all = 'https://ntk2all.com.br';</span></span>
+<span class="pl-s1"><span class="pl-c">*/</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$urlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://cert.gate2all.com.br<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$usuarioGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>demo<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$tokenGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>3366<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$tokenIntencaoGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>3563f901-80af-48be-965e-207e15d55c1e<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$xmlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;usuario&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$usuarioGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/usuario&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;token&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$tokenGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/token&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;tokenIntencao&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$tokenIntencaoGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/tokenIntencao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;numeroDocumento&gt;123456789&lt;/numeroDocumento&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;tipoOperacao&gt;1&lt;/tipoOperacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;valorTransacao&gt;100&lt;/valorTransacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;parcelamentoAdm&gt;S&lt;/parcelamentoAdm&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;qtdeParcelas&gt;01&lt;/qtdeParcelas&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;moeda&gt;986&lt;/moeda&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;captura&gt;S&lt;/captura&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;cartao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;numeroCartao&gt;5549274013227390&lt;/numeroCartao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;mesValidade&gt;05&lt;/mesValidade&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;anoValidade&gt;2020&lt;/anoValidade&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;codigoSeguranca&gt;5644&lt;/codigoSeguranca&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;bandeira&gt;AMEX&lt;/bandeira&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;/cartao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;comprador&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;enderecoIP&gt;local&lt;/enderecoIP&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;nomePortadorCartao&gt;RONERI GONCALVES&lt;/nomePortadorCartao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;cpfPortadorCartao&gt;34650046807&lt;/cpfPortadorCartao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">    &lt;dataNascimentoPortadorCartao&gt;16/08/1979&lt;/dataNascimentoPortadorCartao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;/comprador&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;/transacao&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$curl</span> <span class="pl-k">=</span> <span class="pl-c1">curl_init</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_setopt_array</span>(<span class="pl-smi">$curl</span>, <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_URL</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$urlGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>/venda/integrado<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_CUSTOMREQUEST</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_HTTPHEADER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">"</span>content-type: application/x-www-form-urlencoded<span class="pl-pds">"</span></span>),</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_POSTFIELDS</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>xml=<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$xmlGate2all</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_TIMEOUT</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">90</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_RETURNTRANSFER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">true</span>,</span>
+<span class="pl-s1">));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$response</span> <span class="pl-k">=</span> <span class="pl-c1">curl_exec</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$err</span> <span class="pl-k">=</span> <span class="pl-c1">curl_error</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_close</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$err</span>) {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;cURL Error #:<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$err</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">} <span class="pl-k">else</span> {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;h3&gt;Response: &lt;/h3&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  <span class="pl-c1">highlight_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-smi">$objResponse</span> <span class="pl-k">=</span> <span class="pl-c1">simplexml_load_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1">  <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">autorizacao</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">autorizacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">autorizacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$id_transacao</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">autorizacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">id_transacao</span>;</span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$codResposta</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>00<span class="pl-pds">"</span></span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:green'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">      <span class="pl-smi">$tid</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">autorizacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">tid</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Ref. Host : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$tid</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">      <span class="pl-smi">$codAutorizacao</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">autorizacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">codAutorizacao</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Cod. Autorizacao : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codAutorizacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">captura</span>) {</span>
+<span class="pl-s1">      <span class="pl-smi">$mensagem</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">captura</span><span class="pl-k">-&gt;</span><span class="pl-smi">mensagem</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:blue'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$mensagem</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:blue'&gt;Clique &lt;a href=./captura.php?id_transacao=<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> &gt;aqui&lt;/a&gt; para capturar&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Clique &lt;a href='./consulta.php?id_transacao=<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>'&gt;aqui&lt;/a&gt; para consultar&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span></pre></div>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> kittn
+
+api <span class="pl-k">=</span> kittn.authorize(<span class="pl-s"><span class="pl-pds">'</span>meowmeowmeow<span class="pl-pds">'</span></span>)
+api.kittens.get()</pre></div>
+
+<blockquote>
+<p>xml=</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">transacao</span> <span class="pl-e">versao</span>=<span class="pl-s"><span class="pl-pds">"</span>1.1.2<span class="pl-pds">"</span></span>&gt;
+   &lt;<span class="pl-ent">usuario</span>&gt;demo&lt;/<span class="pl-ent">usuario</span>&gt;
+   &lt;<span class="pl-ent">token</span>&gt;3366&lt;/<span class="pl-ent">token</span>&gt;
+   &lt;<span class="pl-ent">numeroDocumento</span>&gt;123456&lt;/<span class="pl-ent">numeroDocumento</span>&gt;
+   &lt;<span class="pl-ent">tipoOperacao</span>&gt;1&lt;/<span class="pl-ent">tipoOperacao</span>&gt;
+   &lt;<span class="pl-ent">valorTransacao</span>&gt;1000&lt;/<span class="pl-ent">valorTransacao</span>&gt;
+   &lt;<span class="pl-ent">qtdeParcelas</span>&gt;1&lt;/<span class="pl-ent">qtdeParcelas</span>&gt;
+   &lt;<span class="pl-ent">moeda</span>&gt;986&lt;/<span class="pl-ent">moeda</span>&gt;
+   &lt;<span class="pl-ent">captura</span>&gt;N&lt;/<span class="pl-ent">captura</span>&gt;
+   &lt;<span class="pl-ent">cartao</span>&gt;
+      &lt;<span class="pl-ent">numeroCartao</span>&gt;4012001038443335&lt;/<span class="pl-ent">numeroCartao</span>&gt;
+      &lt;<span class="pl-ent">mesValidade</span>&gt;01&lt;/<span class="pl-ent">mesValidade</span>&gt;
+      &lt;<span class="pl-ent">anoValidade</span>&gt;2015&lt;/<span class="pl-ent">anoValidade</span>&gt;
+      &lt;<span class="pl-ent">codigoSeguranca</span>&gt;123&lt;/<span class="pl-ent">codigoSeguranca</span>&gt;
+      &lt;<span class="pl-ent">bandeira</span>&gt;VISA&lt;/<span class="pl-ent">bandeira</span>&gt;
+   &lt;/<span class="pl-ent">cartao</span>&gt;
+   &lt;<span class="pl-ent">comprador</span>&gt;
+      &lt;<span class="pl-ent">enderecoIP</span>&gt;127.0.0.1&lt;/<span class="pl-ent">enderecoIP</span>&gt;
+      &lt;<span class="pl-ent">nomePortadorCartao</span>&gt;Portador&lt;/<span class="pl-ent">nomePortadorCartao</span>&gt;
+      &lt;<span class="pl-ent">cpfPortadorCartao</span>&gt;12345678909&lt;/<span class="pl-ent">cpfPortadorCartao</span>&gt;
+      &lt;<span class="pl-ent">dataNascimentoPortadorCartao</span>&gt;01012001&lt;/<span class="pl-ent">dataNascimentoPortadorCartao</span>&gt;
+   &lt;/<span class="pl-ent">comprador</span>&gt;
+&lt;/<span class="pl-ent">transacao</span>&gt;</pre></div>
+
+<p>Esse endpoint efetua uma autorização na rede adquirente.</p>
+
+<h3>
+<a id="requisição" class="anchor" href="#requisi%C3%A7%C3%A3o" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requisição</h3>
+
+<p><code>POST https://www.ntk2all.com.br/httpRoteador/aprovacao</code></p>
+
+<h3>
+<a id="método-de-envio" class="anchor" href="#m%C3%A9todo-de-envio" aria-hidden="true"><span class="octicon octicon-link"></span></a>Método de Envio</h3>
+
+<p><code>POST /httpRoteador/aprovacao HTTP/1.1</code> </p>
+
+<p><code>Host: www.ntk2all.com.br</code></p>
+
+<p><code>Content-Type: application/x-www-form-urlencoded</code></p>
+
+<p><code>Content-Length: length</code></p>
+
+<h3>
+<a id="tags-xml-para-requisiÇÃo" class="anchor" href="#tags-xml-para-requisi%C3%87%C3%83o" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML PARA REQUISIÇÃO</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>Atributos: versao (tipo: String) Contém as tags usuário, token, numeroDocumento, desc-venda, tipoOperacao, valorTransacao, qtdeParcelas, moeda, captura, tipoParcelamento, cartão e comprador.</td>
+</tr>
+<tr>
+<td>usuario</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>token</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>numeroDocumento</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>desc-venda</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Descrição da Venda</td>
+<td></td>
+</tr>
+<tr>
+<td>tipoOperacao</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Informa código do produto</td>
+<td>Somente serão aceitos os seguintes valores: 1,2,3,4 e 5. Atualmente o significado dos valores usados é: 1. Crédito à Vista 2. Débito 3. Parcelado pela Loja 4. Parcelado pela Administradora</td>
+</tr>
+<tr>
+<td>valorTransacao</td>
+<td>Decimal</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>parcelamentoAdm</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>qtdeParcelas</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>moeda</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>captura</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>tipoParcelamento</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>cartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>numeroCartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>mesValidade</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>anoValidade</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>codigoSeguranca</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>bandeira</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>comprador</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>enderecoIP</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>nomePortadorCartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>cpfPortadorCartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>dataNascimento</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+<tr>
+<td>PortadorCartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>XXXXXXXXXXXXXXXXXXX</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="retornos" class="anchor" href="#retornos" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retornos</h3>
+
+<blockquote>
+<p>Transação autorizada e não capturada</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">autorizacao</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Transação autorizada&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codAutorizacao</span>&gt;123456&lt;/<span class="pl-ent">codAutorizacao</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;00&lt;/<span class="pl-ent">codResposta</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1006993069062C8E1001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">numeroDocumento</span>&gt;123456&lt;/<span class="pl-ent">numeroDocumento</span>&gt;
+   &lt;/<span class="pl-ent">autorizacao</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Transação autorizada e capturada</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">autorizacao</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Transação autorizada&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codAutorizacao</span>&gt;123456&lt;/<span class="pl-ent">codAutorizacao</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;00&lt;/<span class="pl-ent">codResposta</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1006993069062C8E1001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">numeroDocumento</span>&gt;123456&lt;/<span class="pl-ent">numeroDocumento</span>&gt;
+   &lt;/<span class="pl-ent">autorizacao</span>&gt;
+   &lt;<span class="pl-ent">captura</span>&gt;
+      &lt;<span class="pl-ent">mensagem</span>&gt;Transacao capturada com sucesso&lt;/<span class="pl-ent">mensagem</span>&gt;
+      &lt;<span class="pl-ent">valor</span>&gt;1000&lt;/<span class="pl-ent">valor</span>&gt;
+   &lt;/<span class="pl-ent">captura</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Transação negada</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">autorizacao</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Transação negada&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codAutorizacao</span>&gt;null&lt;/<span class="pl-ent">codAutorizacao</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;99&lt;/<span class="pl-ent">codResposta</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1006993069062C8E1001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">numeroDocumento</span>&gt;123456&lt;/<span class="pl-ent">numeroDocumento</span>&gt;
+   &lt;/<span class="pl-ent">autorizacao</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Falha</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">erro</span>&gt;
+   &lt;<span class="pl-ent">codigo</span>&gt;001&lt;/<span class="pl-ent">codigo</span>&gt;
+   &lt;<span class="pl-ent">mensagem</span>&gt;<span class="pl-s"><span class="pl-pds">&lt;![CDATA[</span>cvc-fractionDigits-valid: Value '9.99' has 2 fraction</span>
+<span class="pl-s">digits, but the number of fraction digits has been limited to 0.<span class="pl-pds">]]&gt;</span></span>&lt;/<span class="pl-ent">mensagem</span>&gt;
+&lt;/<span class="pl-ent">erro</span>&gt;</pre></div>
+
+<h3>
+<a id="tags-xml-de-retornos" class="anchor" href="#tags-xml-de-retornos" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML DE RETORNOS</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>retorno_transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>autorizacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>codAutorizacao</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Descrição da Venda</td>
+<td></td>
+</tr>
+<tr>
+<td>codAutorizacao</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Informa código do produto</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>codResposta</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>tid</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>numeroDocumento</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>captura</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="consulta" class="anchor" href="#consulta" aria-hidden="true"><span class="octicon octicon-link"></span></a>Consulta</h2>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c1">header</span>(<span class="pl-s"><span class="pl-pds">'</span>Content-Type: text/html; charset=utf-8<span class="pl-pds">'</span></span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c">//PRODUÇÃO</span></span>
+<span class="pl-s1"><span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">$urlGate2all = 'https://ntk2all.com.br';</span></span>
+<span class="pl-s1"><span class="pl-c">*/</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$urlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://cert.gate2all.com.br<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$usuarioGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>demo<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$tokenGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>3366<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$id_transacao</span> <span class="pl-k">=</span> <span class="pl-smi">$_GET</span>[<span class="pl-s"><span class="pl-pds">'</span>id_transacao<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$xmlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;usuario&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$usuarioGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/usuario&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;token&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$tokenGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/token&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;id_transacao&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/id_transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;/transacao&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$curl</span> <span class="pl-k">=</span> <span class="pl-c1">curl_init</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_setopt_array</span>(<span class="pl-smi">$curl</span>, <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_URL</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$urlGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>/consulta<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_CUSTOMREQUEST</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_HTTPHEADER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">"</span>content-type: application/x-www-form-urlencoded<span class="pl-pds">"</span></span>),</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_POSTFIELDS</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>xml=<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$xmlGate2all</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_TIMEOUT</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">90</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_RETURNTRANSFER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">true</span>,</span>
+<span class="pl-s1">));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$response</span> <span class="pl-k">=</span> <span class="pl-c1">curl_exec</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$err</span> <span class="pl-k">=</span> <span class="pl-c1">curl_error</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_close</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$err</span>) {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;cURL Error #:<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$err</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">} <span class="pl-k">else</span> {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;h3&gt;Response: &lt;/h3&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  <span class="pl-c1">highlight_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-smi">$objResponse</span> <span class="pl-k">=</span> <span class="pl-c1">simplexml_load_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1">  <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$status</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">status</span>;</span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$codResposta</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>00<span class="pl-pds">"</span></span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:green'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$status</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">      <span class="pl-smi">$tid</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">tid</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Ref. Host : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$tid</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">      <span class="pl-smi">$codAutorizacao</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">codAutorizacao</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Cod. Autorizacao : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codAutorizacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$status</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">credito</span><span class="pl-k">-&gt;</span><span class="pl-smi">capturada</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>N<span class="pl-pds">"</span></span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:blue'&gt;Clique &lt;a href=./captura.php?id_transacao=<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> &gt;aqui&lt;/a&gt; para capturar&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:blue'&gt;Transação já capturada&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">transacao</span><span class="pl-k">-&gt;</span><span class="pl-smi">credito</span><span class="pl-k">-&gt;</span><span class="pl-smi">cancelada</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>N<span class="pl-pds">"</span></span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;Clique &lt;a href=./cancelamento.php?id_transacao=<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> &gt;aqui&lt;/a&gt; para cancelar&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;Transação já cancelada&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">  }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Clique &lt;a href='./intencao.php' target='_blank'&gt;aqui&lt;/a&gt; para realizar uma nova transação&lt;/p&gt;<span class="pl-pds">"</span></span>;</span></pre></div>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> kittn
+
+api <span class="pl-k">=</span> kittn.authorize(<span class="pl-s"><span class="pl-pds">'</span>meowmeowmeow<span class="pl-pds">'</span></span>)
+api.kittens.get()</pre></div>
+
+<blockquote>
+<p>xml=</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">transacao</span> <span class="pl-e">versao</span>=<span class="pl-s"><span class="pl-pds">"</span>1.1.2<span class="pl-pds">"</span></span>&gt;
+   &lt;<span class="pl-ent">usuario</span>&gt;demo&lt;/<span class="pl-ent">usuario</span>&gt;
+   &lt;<span class="pl-ent">token</span>&gt;3366&lt;/<span class="pl-ent">token</span>&gt;
+   &lt;<span class="pl-ent">id_transacao</span>&gt;d8ad055e-3c41-45c9-9ee6-5d6ada532552&lt;/<span class="pl-ent">id_transacao</span>&gt;
+   &lt;<span class="pl-ent">id_transacao</span>&gt;515650e7-596d-45cc-b0e3-71cc3dbcad55&lt;/<span class="pl-ent">id_transacao</span>&gt;
+&lt;/<span class="pl-ent">transacao</span>&gt;</pre></div>
+
+<p>Esse endpoint efetua uma consulta no gateway.</p>
+
+<h3>
+<a id="requisição-1" class="anchor" href="#requisi%C3%A7%C3%A3o-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requisição</h3>
+
+<p><code>POST https://www.ntk2all.com.br/httpRoteador/consulta</code></p>
+
+<h3>
+<a id="método-de-envio-1" class="anchor" href="#m%C3%A9todo-de-envio-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Método de Envio</h3>
+
+<p><code>POST /httpRoteador/consulta HTTP/1.1</code> </p>
+
+<p><code>Host: www.ntk2all.com.br</code></p>
+
+<p><code>Content-Type: application/x-www-form-urlencoded</code></p>
+
+<p><code>Content-Length: length</code></p>
+
+<h3>
+<a id="tags-xml-para-requisiÇÃo-1" class="anchor" href="#tags-xml-para-requisi%C3%87%C3%83o-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML PARA REQUISIÇÃO</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>Atributos: versao (tipo: String) Contém as tags usuário, token, numeroDocumento, desc-venda, tipoOperacao, valorTransacao, qtdeParcelas, moeda, captura, tipoParcelamento, cartão e comprador.</td>
+</tr>
+<tr>
+<td>usuario</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>token</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="retornos-1" class="anchor" href="#retornos-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retornos</h3>
+
+<blockquote>
+<p>o exemplo abaixo temos o retorno de duas transações.</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno</span>&gt;
+   &lt;<span class="pl-ent">transacao</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;515650e7-596d-45cc-b0e3-71cc3dbcad55&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">numeroDocumento</span>&gt;123456&lt;/<span class="pl-ent">numeroDocumento</span>&gt;
+      &lt;<span class="pl-ent">valorTransacao</span>&gt;10.00&lt;/<span class="pl-ent">valorTransacao</span>&gt;
+      &lt;<span class="pl-ent">qtdparcelas</span>&gt;1&lt;/<span class="pl-ent">qtdparcelas</span>&gt;
+      &lt;<span class="pl-ent">captura</span>&gt;S&lt;/<span class="pl-ent">captura</span>&gt;
+      &lt;<span class="pl-ent">codAutorizacao</span>&gt;123456&lt;/<span class="pl-ent">codAutorizacao</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;00&lt;/<span class="pl-ent">codResposta</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;10069930690562631001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">cartao</span>&gt;
+         &lt;<span class="pl-ent">bandeira</span>&gt;VISA&lt;/<span class="pl-ent">bandeira</span>&gt;
+      &lt;/<span class="pl-ent">cartao</span>&gt;
+      &lt;<span class="pl-ent">comprador</span>&gt;
+         &lt;<span class="pl-ent">enderecoIP</span> /&gt;
+         &lt;<span class="pl-ent">portadorCartao</span> /&gt;
+         &lt;<span class="pl-ent">cpfPortadorCartao</span> /&gt;
+      &lt;/<span class="pl-ent">comprador</span>&gt;
+   &lt;/<span class="pl-ent">transacao</span>&gt;
+   &lt;<span class="pl-ent">transacao</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;d8ad055e-3c41-45c9-9ee6-5d6ada532552&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">numeroDocumento</span>&gt;123456&lt;/<span class="pl-ent">numeroDocumento</span>&gt;
+      &lt;<span class="pl-ent">valorTransacao</span>&gt;10.00&lt;/<span class="pl-ent">valorTransacao</span>&gt;
+      &lt;<span class="pl-ent">qtdparcelas</span>&gt;1&lt;/<span class="pl-ent">qtdparcelas</span>&gt;
+      &lt;<span class="pl-ent">captura</span>&gt;N&lt;/<span class="pl-ent">captura</span>&gt;
+      &lt;<span class="pl-ent">codAutorizacao</span>&gt;123456&lt;/<span class="pl-ent">codAutorizacao</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;00&lt;/<span class="pl-ent">codResposta</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;10069930690562631009&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">cartao</span>&gt;
+         &lt;<span class="pl-ent">bandeira</span>&gt;MASTERCARD&lt;/<span class="pl-ent">bandeira</span>&gt;
+      &lt;/<span class="pl-ent">cartao</span>&gt;
+      &lt;<span class="pl-ent">comprador</span>&gt;
+         &lt;<span class="pl-ent">enderecoIP</span> /&gt;
+         &lt;<span class="pl-ent">portadorCartao</span> /&gt;
+         &lt;<span class="pl-ent">cpfPortadorCartao</span> /&gt;
+      &lt;/<span class="pl-ent">comprador</span>&gt;
+   &lt;/<span class="pl-ent">transacao</span>&gt;
+&lt;/<span class="pl-ent">retorno</span>&gt;</pre></div>
+
+<h3>
+<a id="tags-xml-de-retornos-1" class="anchor" href="#tags-xml-de-retornos-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML DE RETORNOS</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>numeroDocumento</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>valorTransacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>qtdparcelas</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Descrição da Venda</td>
+<td></td>
+</tr>
+<tr>
+<td>captura</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Informa código do produto</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>codResposta</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>tid</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>cartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>bandeira</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>comprador</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>enderecoIP</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>portadorCartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+<tr>
+<td>cpfPortadorCartao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="captura" class="anchor" href="#captura" aria-hidden="true"><span class="octicon octicon-link"></span></a>Captura</h2>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">//PRODUÇÃO</span></span>
+<span class="pl-s1"><span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">$urlGate2all = 'https://ntk2all.com.br';</span></span>
+<span class="pl-s1"><span class="pl-c">*/</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$urlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://cert.gate2all.com.br<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$usuarioGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>demo<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$tokenGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>3366<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$id_transacao</span> <span class="pl-k">=</span> <span class="pl-smi">$_GET</span>[<span class="pl-s"><span class="pl-pds">'</span>id_transacao<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$xmlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;usuario&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$usuarioGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/usuario&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;token&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$tokenGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/token&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;id_transacao&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/id_transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;/transacao&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$curl</span> <span class="pl-k">=</span> <span class="pl-c1">curl_init</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_setopt_array</span>(<span class="pl-smi">$curl</span>, <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_URL</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$urlGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>/captura<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_CUSTOMREQUEST</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_HTTPHEADER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">"</span>content-type: application/x-www-form-urlencoded<span class="pl-pds">"</span></span>),</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_POSTFIELDS</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>xml=<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$xmlGate2all</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_TIMEOUT</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">90</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_RETURNTRANSFER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">true</span>,</span>
+<span class="pl-s1">));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$response</span> <span class="pl-k">=</span> <span class="pl-c1">curl_exec</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$err</span> <span class="pl-k">=</span> <span class="pl-c1">curl_error</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_close</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$err</span>) {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;cURL Error #:<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$err</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">} <span class="pl-k">else</span> {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;h3&gt;Response: &lt;/h3&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  <span class="pl-c1">highlight_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-smi">$objResponse</span> <span class="pl-k">=</span> <span class="pl-c1">simplexml_load_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1">  <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">captura</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">captura</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">captura</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$codResposta</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>00<span class="pl-pds">"</span></span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:green'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">      <span class="pl-smi">$tid</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">captura</span><span class="pl-k">-&gt;</span><span class="pl-smi">tid</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Ref. Host : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$tid</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">  }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Clique &lt;a href='./consulta.php?id_transacao=<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>'&gt;aqui&lt;/a&gt; para consultar&lt;/p&gt;<span class="pl-pds">"</span></span>;</span></pre></div>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> kittn
+
+api <span class="pl-k">=</span> kittn.authorize(<span class="pl-s"><span class="pl-pds">'</span>meowmeowmeow<span class="pl-pds">'</span></span>)
+api.kittens.get()</pre></div>
+
+<blockquote>
+<p>xml=</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">transacao</span> <span class="pl-e">versao</span>=<span class="pl-s"><span class="pl-pds">"</span>1.1.2<span class="pl-pds">"</span></span>&gt;
+   &lt;<span class="pl-ent">usuario</span>&gt;demo&lt;/<span class="pl-ent">usuario</span>&gt;
+   &lt;<span class="pl-ent">token</span>&gt;3366&lt;/<span class="pl-ent">token</span>&gt;
+   &lt;<span class="pl-ent">id_transacao</span>&gt;25a433ef-1869-4b33-b8dc-0f7e4a3ff3c6&lt;/<span class="pl-ent">id_transacao</span>&gt;
+   &lt;<span class="pl-ent">vl_captura</span>&gt;999&lt;/<span class="pl-ent">vl_captura</span>&gt;
+&lt;/<span class="pl-ent">transacao</span>&gt;</pre></div>
+
+<p>Esse endpoint efetua a captura da transação</p>
+
+<h3>
+<a id="requisição-2" class="anchor" href="#requisi%C3%A7%C3%A3o-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requisição</h3>
+
+<p><code>POST https://www.ntk2all.com.br/httpRoteador/captura</code></p>
+
+<h3>
+<a id="método-de-envio-2" class="anchor" href="#m%C3%A9todo-de-envio-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Método de Envio</h3>
+
+<p><code>POST /httpRoteador/captura HTTP/1.1</code> </p>
+
+<p><code>Host: www.ntk2all.com.br</code></p>
+
+<p><code>Content-Type: application/x-www-form-urlencoded</code></p>
+
+<p><code>Content-Length: length</code></p>
+
+<h3>
+<a id="tags-xml-para-requisiÇÃo-2" class="anchor" href="#tags-xml-para-requisi%C3%87%C3%83o-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML PARA REQUISIÇÃO</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>XXXXXXXX</td>
+</tr>
+<tr>
+<td>usuario</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>token</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>vl_captura</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="retornos-2" class="anchor" href="#retornos-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retornos</h3>
+
+<blockquote>
+<p>Captura realizada com sucesso</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">captura</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1006993069062C8E1001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Transacao capturada com sucesso&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">valor</span>&gt;1000&lt;/<span class="pl-ent">valor</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;00&lt;/<span class="pl-ent">codResposta</span>&gt;
+   &lt;/<span class="pl-ent">captura</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Caso a transação já tenha sido capturada previamente o retorno será:</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">captura</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1006993069062C8E1001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;O status 'Capturada' não permite captura.&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;030&lt;/<span class="pl-ent">codResposta</span>&gt;
+   &lt;/<span class="pl-ent">captura</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Caso a transação não tenha sido autorizada o retorno será:</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">captura</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1006993069062C8E1001&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;O status 'não autorizada' não permite captura.&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;030&lt;/<span class="pl-ent">codResposta</span>&gt;
+   &lt;/<span class="pl-ent">captura</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<h3>
+<a id="tags-xml-de-retornos-2" class="anchor" href="#tags-xml-de-retornos-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML DE RETORNOS</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>retorno-transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>captura</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>tid</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Descrição da Venda</td>
+<td></td>
+</tr>
+<tr>
+<td>valor</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Informa código do produto</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>codResposta</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="cancelamento" class="anchor" href="#cancelamento" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cancelamento</h2>
+
+<div class="highlight highlight-text-html-php"><pre><span class="pl-s1"><span class="pl-c">//PRODUÇÃO</span></span>
+<span class="pl-s1"><span class="pl-c">/*</span></span>
+<span class="pl-s1"><span class="pl-c">$urlGate2all = 'https://ntk2all.com.br';</span></span>
+<span class="pl-s1"><span class="pl-c">*/</span></span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$urlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>http://cert.gate2all.com.br<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$usuarioGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>demo<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"><span class="pl-smi">$tokenGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>3366<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$id_transacao</span> <span class="pl-k">=</span> <span class="pl-smi">$_GET</span>[<span class="pl-s"><span class="pl-pds">'</span>id_transacao<span class="pl-pds">'</span></span>];</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$xmlGate2all</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">'</span>&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;usuario&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$usuarioGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/usuario&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;token&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$tokenGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/token&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">  &lt;id_transacao&gt;<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">'</span>&lt;/id_transacao&gt;</span></span>
+<span class="pl-s1"><span class="pl-s">&lt;/transacao&gt;<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$curl</span> <span class="pl-k">=</span> <span class="pl-c1">curl_init</span>();</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_setopt_array</span>(<span class="pl-smi">$curl</span>, <span class="pl-c1">array</span>(</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_URL</span> <span class="pl-k">=&gt;</span> <span class="pl-smi">$urlGate2all</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>/cancelamento<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_CUSTOMREQUEST</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">"</span>POST<span class="pl-pds">"</span></span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_HTTPHEADER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">array</span>(<span class="pl-s"><span class="pl-pds">"</span>content-type: application/x-www-form-urlencoded<span class="pl-pds">"</span></span>),</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_POSTFIELDS</span> <span class="pl-k">=&gt;</span> <span class="pl-s"><span class="pl-pds">'</span>xml=<span class="pl-pds">'</span></span><span class="pl-k">.</span><span class="pl-smi">$xmlGate2all</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_TIMEOUT</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">90</span>,</span>
+<span class="pl-s1">  <span class="pl-c1">CURLOPT_RETURNTRANSFER</span> <span class="pl-k">=&gt;</span> <span class="pl-c1">true</span>,</span>
+<span class="pl-s1">));</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-smi">$response</span> <span class="pl-k">=</span> <span class="pl-c1">curl_exec</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"><span class="pl-smi">$err</span> <span class="pl-k">=</span> <span class="pl-c1">curl_error</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">curl_close</span>(<span class="pl-smi">$curl</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-k">if</span> (<span class="pl-smi">$err</span>) {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;cURL Error #:<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$err</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">} <span class="pl-k">else</span> {</span>
+<span class="pl-s1">  <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;h3&gt;Response: &lt;/h3&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  <span class="pl-c1">highlight_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">  <span class="pl-smi">$objResponse</span> <span class="pl-k">=</span> <span class="pl-c1">simplexml_load_string</span>(<span class="pl-smi">$response</span>);</span>
+<span class="pl-s1">  <span class="pl-k">if</span> (<span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">cancelamento</span>) {</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">cancelamento</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">cancelamento</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-k">if</span> (<span class="pl-smi">$codResposta</span> <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">"</span>00<span class="pl-pds">"</span></span>) {</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:green'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">      <span class="pl-smi">$tid</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">cancelamento</span><span class="pl-k">-&gt;</span><span class="pl-smi">tid</span>;</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Ref. Host : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$tid</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">      <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    }</span>
+<span class="pl-s1">  }<span class="pl-k">else</span>{</span>
+<span class="pl-s1">    <span class="pl-smi">$codResposta</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">codResposta</span>;</span>
+<span class="pl-s1">    <span class="pl-smi">$message</span> <span class="pl-k">=</span> <span class="pl-smi">$objResponse</span><span class="pl-k">-&gt;</span><span class="pl-smi">message</span>;</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p style='color:red'&gt;<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$codResposta</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span> : <span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$message</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>&lt;/p&gt;<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">  }</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">}</span>
+<span class="pl-s1"></span>
+<span class="pl-s1"><span class="pl-c1">echo</span> <span class="pl-s"><span class="pl-pds">"</span>&lt;p&gt;Clique &lt;a href='./consulta.php?id_transacao=<span class="pl-pds">"</span></span><span class="pl-k">.</span><span class="pl-smi">$id_transacao</span><span class="pl-k">.</span><span class="pl-s"><span class="pl-pds">"</span>'&gt;aqui&lt;/a&gt; para consultar&lt;/p&gt;<span class="pl-pds">"</span></span>;</span></pre></div>
+
+<div class="highlight highlight-source-python"><pre><span class="pl-k">import</span> kittn
+
+api <span class="pl-k">=</span> kittn.authorize(<span class="pl-s"><span class="pl-pds">'</span>meowmeowmeow<span class="pl-pds">'</span></span>)
+api.kittens.get()</pre></div>
+
+<blockquote>
+<p>xml=</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">transacao</span> <span class="pl-e">versao</span>=<span class="pl-s"><span class="pl-pds">"</span>1.1.2<span class="pl-pds">"</span></span>&gt;
+   &lt;<span class="pl-ent">usuario</span>&gt;demo&lt;/<span class="pl-ent">usuario</span>&gt;
+   &lt;<span class="pl-ent">token</span>&gt;3366&lt;/<span class="pl-ent">token</span>&gt;
+   &lt;<span class="pl-ent">id_transacao</span>&gt;25a433ef-1869-4b33-b8dc-0f7e4a3ff3c6&lt;/<span class="pl-ent">id_transacao</span>&gt;
+   &lt;<span class="pl-ent">valorTransacao</span>&gt;999&lt;/<span class="pl-ent">valorTransacao</span>&gt;
+&lt;/<span class="pl-ent">transacao</span>&gt;</pre></div>
+
+<p>Esse endpoint efetua o cancelamento da transação</p>
+
+<h3>
+<a id="requisição-3" class="anchor" href="#requisi%C3%A7%C3%A3o-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requisição</h3>
+
+<p><code>POST https://www.ntk2all.com.br/httpRoteador/cancelamento</code></p>
+
+<h3>
+<a id="método-de-envio-3" class="anchor" href="#m%C3%A9todo-de-envio-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Método de Envio</h3>
+
+<p><code>POST /httpRoteador/cancelamento HTTP/1.1</code> </p>
+
+<p><code>Host: www.ntk2all.com.br</code></p>
+
+<p><code>Content-Type: application/x-www-form-urlencoded</code></p>
+
+<p><code>Content-Length: length</code></p>
+
+<h3>
+<a id="tags-xml-para-requisiÇÃo-3" class="anchor" href="#tags-xml-para-requisi%C3%87%C3%83o-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML PARA REQUISIÇÃO</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>XXXXXXXX</td>
+</tr>
+<tr>
+<td>usuario</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>token</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>valorTransacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+</tbody>
+</table>
+
+<h3>
+<a id="retornos-3" class="anchor" href="#retornos-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retornos</h3>
+
+<blockquote>
+<p>Sucesso</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">cancelamento</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1175&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Transação desfeita&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;00&lt;/<span class="pl-ent">codResposta</span>&gt;
+   &lt;/<span class="pl-ent">cancelamento</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Erro - Prazo de cancelamento vencido</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">cancelamento</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1175&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Nao foi possivel cancelar a transacao&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;040&lt;/<span class="pl-ent">codResposta</span>&gt;
+   &lt;/<span class="pl-ent">cancelamento</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<blockquote>
+<p>Transação já cancelada</p>
+</blockquote>
+
+<div class="highlight highlight-text-xml"><pre>&lt;?<span class="pl-ent">xml</span><span class="pl-e"> version</span>=<span class="pl-s"><span class="pl-pds">"</span>1.0<span class="pl-pds">"</span></span><span class="pl-e"> encoding</span>=<span class="pl-s"><span class="pl-pds">"</span>UTF-8<span class="pl-pds">"</span></span>?&gt;
+&lt;<span class="pl-ent">retorno-transacao</span>&gt;
+   &lt;<span class="pl-ent">cancelamento</span>&gt;
+      &lt;<span class="pl-ent">id_transacao</span>&gt;36c449e1-bd14-4aeb-8d5a-302a72e25181&lt;/<span class="pl-ent">id_transacao</span>&gt;
+      &lt;<span class="pl-ent">tid</span>&gt;1175&lt;/<span class="pl-ent">tid</span>&gt;
+      &lt;<span class="pl-ent">message</span>&gt;Transação já cancelada&lt;/<span class="pl-ent">message</span>&gt;
+      &lt;<span class="pl-ent">codResposta</span>&gt;041&lt;/<span class="pl-ent">codResposta</span>&gt;
+   &lt;/<span class="pl-ent">cancelamento</span>&gt;
+&lt;/<span class="pl-ent">retorno-transacao</span>&gt;</pre></div>
+
+<h3>
+<a id="tags-xml-de-retornos-3" class="anchor" href="#tags-xml-de-retornos-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>TAGS XML DE RETORNOS</h3>
+
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Tipo</th>
+<th>Obrig.</th>
+<th>Ocorrências</th>
+<th>Descrição</th>
+<th>Observações</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>retorno-transacao</td>
+<td>No Raiz</td>
+<td>SIM</td>
+<td>1</td>
+<td>Tag principal do XML.</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>cancelamento</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Nome do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>id_transacao</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Token do usuário para a transação</td>
+<td></td>
+</tr>
+<tr>
+<td>tid</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Numero do Documento</td>
+<td>O valor desta tag deve ser enviado pela loja, para controle interno da transação.</td>
+</tr>
+<tr>
+<td>message</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Descrição da Venda</td>
+<td></td>
+</tr>
+<tr>
+<td>valor</td>
+<td>String</td>
+<td>NAO</td>
+<td>0 até 1</td>
+<td>Informa código do produto</td>
+<td>XXXXXXXXX</td>
+</tr>
+<tr>
+<td>codResposta</td>
+<td>String</td>
+<td>SIM</td>
+<td>1</td>
+<td>Valor da Transação</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="owner">
+      <p><a href="https://github.com/edubossa" class="avatar"><img src="https://avatars0.githubusercontent.com/u/5875766?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/edubossa">edubossa</a> maintains <a href="https://github.com/edubossa/WebSocket">docs.gate2all</a></p>
+
+
+      </div>
+      <div class="creds">
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+      </div>
+    </footer>
+  </div>
+  <div class="current-section">
+    <a href="#top">Scroll to top</a>
+    <a href="https://github.com/edubossa/WebSocket/tarball/master" class="tar">tar</a><a href="https://github.com/edubossa/WebSocket/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <p class="name"></p>
+  </div>
+
+  
+</body>
+</html>
